@@ -1,2 +1,139 @@
-# multi-search
-Multi-search forked from https://github.com/iammert/MultiSearchView 
+# Material multi search
+
+A reworked fork of [MultiSearchView](https://github.com/iammert/MultiSearchView) with a reworked codebase
+
+All design credits goes to [Cuberto](https://dribbble.com/cuberto) And inspired from [this design](https://dribbble.com/shots/5922034-Multi-search-by-categories)
+
+![](https://raw.githubusercontent.com/anitrend/material-multi-search/develop/art/multisearch.gif)
+
+## Setup
+```gradle
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+dependencies {
+    implementation 'co.github.anitrend:material-multi-search:latest'
+}
+```
+
+## Usage
+
+How to set up the library in your project [setup guide here](https://jitpack.io/#anitrend/material-multi-search) and see the `sample` app project for a working demo
+
+### 1. Add the view into your layout file
+```xml
+    <co.anitrend.multisearch.ui.MultiSearch
+        android:id="@+id/multiSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+```
+
+### 2. Setup callbacks for multi-search events
+```kotlin
+    private val searchChangeListener =
+        object : MultiSearchChangeListener {
+            override fun onTextChanged(index: Int, charSequence: CharSequence) {
+                Timber.tag(TAG).i("onTextChanged(index: $index, charSequence: $charSequence)")
+            }
+
+            override fun onSearchComplete(index: Int, charSequence: CharSequence) {
+                Timber.tag(TAG).i("onSearchComplete(index: $index, charSequence: $charSequence)")
+            }
+
+            override fun onSearchItemRemoved(index: Int) {
+                Timber.tag(TAG).i("onSearchItemRemoved(index: $index)")
+            }
+
+            override fun onItemSelected(index: Int, charSequence: CharSequence) {
+                Timber.tag(TAG).i("onItemSelected(index: $index, charSequence: $charSequence)")
+            }
+        }
+
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        multiSearch.setSearchViewListener(searchChangeListener)
+    }
+```
+
+Should result in something similar to this:
+
+![](https://raw.githubusercontent.com/anitrend/material-multi-search/develop/art/art.webp)
+
+## Customize
+
+If you need customize multi-search, firstly you should add style set under `styles.xml`
+```xml
+     <!-- Search Text Style. -->
+    <style name="MultiSearchEditTextStyle">
+        <!-- Custom values write to here for SearchEditText. -->
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:enabled">true</item>
+        <item name="android:hint">Search</item>
+        <item name="android:imeOptions">actionSearch</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:maxLength">15</item>
+        <item name="android:inputType">textCapSentences</item>
+        <item name="android:textColorHint">#80999999</item>
+        <item name="android:textColor">#000</item>
+    </style>
+```
+
+Thereafter, you should give style set to app:searchTextStyle under MultiSearchView
+
+```xml
+    <co.anitrend.multisearch.ui.MultiSearch
+        android:id="@+id/multiSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:searchTextAppearance="@style/MultiSearchEditTextStyle" />
+
+```
+
+If you need to customize icons, and other properties for multi search the following sytles are available
+
+```xml
+    <declare-styleable name="MultiSearch">
+        <!-- drawable shape resource to use for selection indicator -->
+        <attr name="searchSelectionIndicator" format="reference" />
+
+        <!-- Search text appearance as a style resource -->
+        <attr name="searchTextAppearance" format="reference" />
+
+        <!-- Search icon, the default that will be used is a 24dp vector image-->
+        <attr name="searchIcon" format="reference" />
+
+        <!-- Search term remove icon, the default is a 10dp vector image -->
+        <attr name="searchRemoveIcon" format="reference" />
+    </declare-styleable>
+```
+
+
+License
+--------
+
+
+    Copyright 2019 AniTrend
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
