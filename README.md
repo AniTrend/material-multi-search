@@ -1,6 +1,8 @@
-# Material multi search
+# Material multi search &nbsp; [![](https://jitpack.io/v/anitrend/material-multi-search.svg)](https://jitpack.io/#anitrend/material-multi-search) &nbsp; [![Codacy Badge](https://api.codacy.com/project/badge/Grade/6a3fadd09a404229a9b649bbcb9415dd)](https://www.codacy.com/manual/AniTrend/material-multi-search?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=AniTrend/material-multi-search&amp;utm_campaign=Badge_Grade) &nbsp; [![Build Status](https://travis-ci.com/AniTrend/material-multi-search.svg?branch=master)](https://travis-ci.com/AniTrend/material-multi-search)
 
 A reworked fork of [MultiSearchView](https://github.com/iammert/MultiSearchView) with a reworked codebase
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FAniTrend%2Fmaterial-multi-search.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FAniTrend%2Fmaterial-multi-search?ref=badge_large)
 
 All design credits goes to [Cuberto](https://dribbble.com/cuberto) And inspired from [this design](https://dribbble.com/shots/5922034-Multi-search-by-categories)
 
@@ -136,4 +138,3 @@ License
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
