@@ -37,7 +37,7 @@ dependencies {
     implementation "androidx.core:core-ktx:$coreKtx"
 
     implementation "com.jakewharton.timber:timber:$timber"
-    //implementation project(':multi-search')
+    implementation project(':multi-search')
 
     testImplementation "junit:junit:$junit"
     androidTestImplementation "androidx.test.ext:junit:$junitExt"
