@@ -1,2 +1,4 @@
-include ':app', ':multi-search'
-rootProject.name='Multi Search'
+include ':multi-search'
+
+if (System.getenv("CI") == null)
+    include ':sample'
