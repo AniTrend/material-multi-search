@@ -147,7 +147,9 @@ internal class MultiSearchUseCase(
             )
         }
 
-        selectedSearchItemTab?.let { selectTab(it) }
+        selectedSearchItemTab?.let {
+            selectTab(it)
+        }
     }
 
     internal fun onItemClicked(searchItem: View) {
