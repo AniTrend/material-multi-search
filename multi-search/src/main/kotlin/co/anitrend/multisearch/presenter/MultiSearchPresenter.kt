@@ -19,6 +19,7 @@ internal class MultiSearchPresenter(private val context: Context) {
 
     private lateinit var multiSearchConfiguration: MultiSearchConfiguration
 
+    internal var isInSearchMode = false
     internal val sizeRemoveIcon = context.resources.getDimensionPixelSize(
         R.dimen.material_padding
     )

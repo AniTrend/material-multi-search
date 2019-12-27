@@ -43,9 +43,6 @@ class MultiSearchContainer @JvmOverloads constructor(
 
     internal lateinit var presenter: MultiSearchPresenter
 
-    var isInSearchMode = false
-        internal set
-
     var multiSearchChangeListener: MultiSearchChangeListener? = null
         internal set
 
