@@ -238,6 +238,6 @@ internal class MultiSearchUseCase(
 
     companion object {
 
-        private const val DEFAULT_ANIM_DURATION = 500L
+        private const val DEFAULT_ANIM_DURATION = 250L
     }
 }
