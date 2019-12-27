@@ -147,7 +147,9 @@ internal class MultiSearchUseCase(
             )
         }
 
-        selectedSearchItemTab?.let { selectTab(it) }
+        selectedSearchItemTab?.let {
+            selectTab(it)
+        }
     }
 
     internal fun onItemClicked(searchItem: View) {
@@ -173,6 +175,15 @@ internal class MultiSearchUseCase(
         }
     }
 
+    private fun onTabRemoving(newSelectedTabView: View, selectedIndex: Int) {
+        multiSearchChangeListener?.onItemSelected(
+            selectedIndex,
+            newSelectedTabView.searchTermEditText.toString()
+        )
+        changeSelectedTab(newSelectedTabView)
+        selectedSearchItemTab = newSelectedTabView
+    }
+
     override fun addTab(viewWidth: Float, searchViewWidth: Float) {
         multiSearchContainer.layoutItemContainer.addView(
             selectedSearchItemTab
@@ -188,20 +199,22 @@ internal class MultiSearchUseCase(
             currentChildCount == 1 -> {
                 multiSearchContainer.viewIndicator.visibility = View.INVISIBLE
                 multiSearchContainer.layoutItemContainer.removeView(parent)
+                presenter.isInSearchMode = false
+                selectedSearchItemTab = null
             }
             removeIndex == currentChildCount - 1 -> {
-                val newSelectedView = multiSearchContainer
-                    .layoutItemContainer.getChildAt(removeIndex - 1)
-                selectTab(newSelectedView)
+                val index = removeIndex - 1
+                val newSelectedTabView = multiSearchContainer
+                    .layoutItemContainer.getChildAt(index)
                 multiSearchContainer.layoutItemContainer.removeView(parent)
-                selectedSearchItemTab = newSelectedView
+                onTabRemoving(newSelectedTabView, index)
             }
             else -> {
+                val index = removeIndex + 1
                 val newSelectedTabView = multiSearchContainer
-                    .layoutItemContainer.getChildAt(removeIndex + 1)
-                selectTab(newSelectedTabView)
+                    .layoutItemContainer.getChildAt(index)
                 multiSearchContainer.layoutItemContainer.removeView(parent)
-                selectedSearchItemTab = newSelectedTabView
+                onTabRemoving(newSelectedTabView, index)
             }
         }
 
@@ -236,6 +249,6 @@ internal class MultiSearchUseCase(
 
     companion object {
 
-        private const val DEFAULT_ANIM_DURATION = 500L
+        private const val DEFAULT_ANIM_DURATION = 250L
     }
 }

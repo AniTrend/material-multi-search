@@ -39,7 +39,7 @@ class MultiSearch @JvmOverloads constructor(
 
         multiSearchContainer.presenter = presenter
         multiSearchActionIcon.setOnClickListener {
-            if (!multiSearchContainer.isInSearchMode)
+            if (!presenter.isInSearchMode)
                 multiSearchContainer.search()
             else
                 multiSearchContainer.completeSearch()

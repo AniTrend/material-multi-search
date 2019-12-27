@@ -43,9 +43,6 @@ class MultiSearchContainer @JvmOverloads constructor(
 
     internal lateinit var presenter: MultiSearchPresenter
 
-    var isInSearchMode = false
-        internal set
-
     var multiSearchChangeListener: MultiSearchChangeListener? = null
         internal set
 
@@ -72,24 +69,24 @@ class MultiSearchContainer @JvmOverloads constructor(
     }
 
     internal fun search() {
-        if (isInSearchMode)
+        if (presenter.isInSearchMode)
             return
 
         multiSearchUseCase.selectedSearchItemTab?.let {
             multiSearchUseCase.deselectTab(it)
         }
 
-        isInSearchMode = true
+        presenter.isInSearchMode = true
 
         multiSearchUseCase.selectedSearchItemTab = createNewSearchItem()
         multiSearchUseCase.addTab(viewWidth, searchViewWidth)
     }
 
     internal fun completeSearch() {
-        if (!isInSearchMode)
+        if (!presenter.isInSearchMode)
             return
 
-        isInSearchMode = false
+        presenter.isInSearchMode = false
         hideKeyboard(context)
 
         multiSearchUseCase.onSearchCompleted()
@@ -125,7 +122,7 @@ class MultiSearchContainer @JvmOverloads constructor(
         }
 
         searchItem.searchTermEditText.onSearchAction(
-            filter = isInSearchMode
+            filter = presenter.isInSearchMode
         ) { completeSearch() }
 
         return searchItem
