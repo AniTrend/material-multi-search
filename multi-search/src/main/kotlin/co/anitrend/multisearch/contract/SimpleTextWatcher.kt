@@ -2,6 +2,8 @@ package co.anitrend.multisearch.contract
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import co.anitrend.multisearch.BuildConfig
 
 internal abstract class SimpleTextWatcher : TextWatcher {
 
@@ -20,7 +22,11 @@ internal abstract class SimpleTextWatcher : TextWatcher {
      * ended up.
      */
     override fun afterTextChanged(s: Editable?) {
-
+        if (BuildConfig.DEBUG)
+            Log.d(
+                "SimpleTextWatcher",
+                "afterTextChanged(s: $s)"
+            )
     }
 
     /**
@@ -31,7 +37,11 @@ internal abstract class SimpleTextWatcher : TextWatcher {
      * this callback.
      */
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
+        if (BuildConfig.DEBUG)
+            Log.d(
+                "SimpleTextWatcher",
+                "beforeTextChanged(s: $s, start: $start, count: $count, after: $after)"
+            )
     }
 
     /**
@@ -42,6 +52,10 @@ internal abstract class SimpleTextWatcher : TextWatcher {
      * this callback.
      */
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
+        if (BuildConfig.DEBUG)
+            Log.d(
+                "SimpleTextWatcher",
+                "onTextChanged(s: $s, start: $start, before: $before, count: $count)"
+            )
     }
 }
