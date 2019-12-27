@@ -39,10 +39,6 @@ android {
     }
 }
 
-ext {
-    easingInterpolator = '1.2.0'
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -50,8 +46,6 @@ dependencies {
 
     implementation "androidx.appcompat:appcompat:$appcompat"
     implementation "androidx.core:core-ktx:$coreKtx"
-
-    implementation "com.daasuu:EasingInterpolator:$easingInterpolator"
 
     testImplementation "junit:junit:$junit"
     androidTestImplementation "androidx.test.ext:junit:$junitExt"
