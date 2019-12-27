@@ -26,7 +26,8 @@ interface MultiSearchChangeListener {
     fun onSearchItemRemoved(index: Int)
 
     /**
-     * Called when a search item has been selected
+     * Called when a search item has been selected, or when an item has been removed
+     * and a new selection is made
      *
      * @param index character index that has been changed
      * @param charSequence stream of characters including changes
