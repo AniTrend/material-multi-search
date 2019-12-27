@@ -188,6 +188,7 @@ internal class MultiSearchUseCase(
             currentChildCount == 1 -> {
                 multiSearchContainer.viewIndicator.visibility = View.INVISIBLE
                 multiSearchContainer.layoutItemContainer.removeView(parent)
+                presenter.isInSearchMode = false
             }
             removeIndex == currentChildCount - 1 -> {
                 val newSelectedView = multiSearchContainer
