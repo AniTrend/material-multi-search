@@ -1,6 +1,11 @@
 # Material multi search &nbsp; [![](https://jitpack.io/v/anitrend/material-multi-search.svg)](https://jitpack.io/#anitrend/material-multi-search) &nbsp; [![Codacy Badge](https://api.codacy.com/project/badge/Grade/6a3fadd09a404229a9b649bbcb9415dd)](https://www.codacy.com/manual/AniTrend/material-multi-search?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=AniTrend/material-multi-search&amp;utm_campaign=Badge_Grade) &nbsp; [![Build Status](https://travis-ci.com/AniTrend/material-multi-search.svg?branch=master)](https://travis-ci.com/AniTrend/material-multi-search)
 
-A reworked fork of [MultiSearchView](https://github.com/iammert/MultiSearchView) with a reworked codebase
+A reworked code base fork of [MultiSearchView](https://github.com/iammert/MultiSearchView) with additional customization:
+- Configurable search icon
+- Configurable selection indicator
+- Configurable search item delete icon 
+
+> For additional changes please see [CHANGELOG.md](https://github.com/anitrend/material-multi-search/blob/master/CHANGELOG.md)
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FAniTrend%2Fmaterial-multi-search.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FAniTrend%2Fmaterial-multi-search?ref=badge_large)
 
