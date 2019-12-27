@@ -189,6 +189,7 @@ internal class MultiSearchUseCase(
                 multiSearchContainer.viewIndicator.visibility = View.INVISIBLE
                 multiSearchContainer.layoutItemContainer.removeView(parent)
                 presenter.isInSearchMode = false
+                selectedSearchItemTab = null
             }
             removeIndex == currentChildCount - 1 -> {
                 val newSelectedView = multiSearchContainer
