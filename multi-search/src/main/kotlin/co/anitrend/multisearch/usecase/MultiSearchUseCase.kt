@@ -23,8 +23,9 @@ internal class MultiSearchUseCase(
     private val searchEnterScrollAnimation by lazy(LazyThreadSafetyMode.NONE) {
         ValueAnimator.ofInt()
             .apply {
-                duration = DEFAULT_ANIM_DURATION
-                interpolator = LinearOutSlowInInterpolator()
+                presenter.configureValueAnimator(
+                    this
+                )
                 addUpdateListener {
                     multiSearchContainer.horizontalScrollView
                         .smoothScrollTo(it.animatedValue as Int, 0)
@@ -41,8 +42,9 @@ internal class MultiSearchUseCase(
 
     private val searchCompleteCollapseAnimator by lazy(LazyThreadSafetyMode.NONE) {
         ValueAnimator.ofInt().apply {
-            duration = DEFAULT_ANIM_DURATION
-            interpolator = LinearOutSlowInInterpolator()
+            presenter.configureValueAnimator(
+                this
+            )
             addUpdateListener { valueAnimator ->
                 selectedSearchItemTab?.let {
                     val newViewLayoutParams = it.layoutParams
@@ -55,8 +57,9 @@ internal class MultiSearchUseCase(
 
     private val firstSearchTranslateAnimator by lazy(LazyThreadSafetyMode.NONE) {
         ValueAnimator.ofFloat().apply {
-            duration = DEFAULT_ANIM_DURATION
-            interpolator = LinearOutSlowInInterpolator()
+            presenter.configureValueAnimator(
+                this
+            )
             addUpdateListener { valueAnimator ->
                 multiSearchContainer.horizontalScrollView
                     .translationX = valueAnimator.animatedValue as Float
@@ -72,8 +75,9 @@ internal class MultiSearchUseCase(
 
     private val indicatorAnimator by lazy(LazyThreadSafetyMode.NONE) {
         ValueAnimator.ofFloat().apply {
-            duration = DEFAULT_ANIM_DURATION
-            interpolator = LinearOutSlowInInterpolator()
+            presenter.configureValueAnimator(
+                this
+            )
             addUpdateListener { valueAnimator ->
                 multiSearchContainer.viewIndicator.x =
                     valueAnimator.animatedValue as Float

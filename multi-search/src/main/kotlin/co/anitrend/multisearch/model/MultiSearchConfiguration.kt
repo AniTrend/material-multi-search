@@ -7,5 +7,6 @@ internal data class MultiSearchConfiguration(
     @DrawableRes val searchSelectionIndicator: Int,
     @StyleRes val searchTextAppearance: Int,
     @DrawableRes val searchIcon: Int,
-    @DrawableRes val searchRemoveIcon: Int
+    @DrawableRes val searchRemoveIcon: Int,
+    val searchAnimationDuration: Int
 )
