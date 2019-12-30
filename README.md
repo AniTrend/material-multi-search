@@ -3,7 +3,8 @@
 A reworked code base fork of [MultiSearchView](https://github.com/iammert/MultiSearchView) with additional customization:
 - Configurable search icon
 - Configurable selection indicator
-- Configurable search item delete icon 
+- Configurable search item delete icon
+- Configurable search animation duration
 
 > For additional changes please see [CHANGELOG.md](https://github.com/anitrend/material-multi-search/blob/master/CHANGELOG.md)
 
@@ -107,7 +108,7 @@ Thereafter, you should give style set to app:searchTextStyle under MultiSearchVi
 
 ```
 
-If you need to customize icons, and other properties for multi search the following sytles are available
+If you need to customize icons, and other properties for multi search the following styles are available
 
 ```xml
     <declare-styleable name="MultiSearch">
@@ -122,6 +123,9 @@ If you need to customize icons, and other properties for multi search the follow
 
         <!-- Search term remove icon, the default is a 10dp vector image -->
         <attr name="searchRemoveIcon" format="reference" />
+
+        <!-- Search animation effect duration, the default is 500ms -->
+        <attr name="searchAnimationDuration" format="integer" />
     </declare-styleable>
 ```
 
