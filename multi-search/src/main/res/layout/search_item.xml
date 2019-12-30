@@ -12,8 +12,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:imeOptions="actionSearch"
-        android:focusable="true"
-        android:clickable="true"
         android:focusableInTouchMode="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:paddingTop="@dimen/material_padding"

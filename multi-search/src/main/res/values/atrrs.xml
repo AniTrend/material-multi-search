@@ -12,5 +12,8 @@
 
         <!-- Search term remove icon, the default is a 10dp vector image -->
         <attr name="searchRemoveIcon" format="reference" />
+
+        <!-- Search animation effect duration, the default is 500ms -->
+        <attr name="searchAnimationDuration" format="integer" />
     </declare-styleable>
 </resources>

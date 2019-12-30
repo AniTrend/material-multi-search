@@ -96,8 +96,10 @@ class MultiSearchContainer @JvmOverloads constructor(
         val searchItem = presenter.createNewSearchItem(this, searchViewWidth)
 
         searchItem.searchTermEditText.setOnClickListener {
-            multiSearchUseCase.onItemClicked(searchItem)
-            multiSearchUseCase.changeSelectedTab(searchItem)
+            if (!presenter.isInSearchMode) {
+                multiSearchUseCase.onItemClicked(searchItem)
+                multiSearchUseCase.changeSelectedTab(searchItem)
+            }
         }
 
         searchItem.searchTermEditText.addTextChangedListener(

@@ -1,6 +1,7 @@
 package co.anitrend.multisearch.presenter
 
 import android.animation.LayoutTransition
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.res.TypedArray
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import co.anitrend.multisearch.R
 import co.anitrend.multisearch.extensions.setStyle
 import co.anitrend.multisearch.model.MultiSearchConfiguration
@@ -49,13 +51,18 @@ internal class MultiSearchPresenter(private val context: Context) {
             R.styleable.MultiSearch_searchRemoveIcon,
             R.drawable.ic_round_clear
         )
+        val searchAnimationDuration = typedArray.getInt(
+            R.styleable.MultiSearch_searchAnimationDuration,
+            500
+        )
         typedArray.recycle()
 
         multiSearchConfiguration = MultiSearchConfiguration(
             searchSelectionIndicator = searchSelectionIndicator,
             searchTextAppearance = searchTextAppearance,
             searchIcon = searchIcon,
-            searchRemoveIcon = searchRemoveIcon
+            searchRemoveIcon = searchRemoveIcon,
+            searchAnimationDuration = searchAnimationDuration
         )
     }
 
@@ -137,5 +144,13 @@ internal class MultiSearchPresenter(private val context: Context) {
         }
 
         return searchItem
+    }
+
+    /**
+     * Configures animators duration and interpolator
+     */
+    fun configureValueAnimator(valueAnimator: ValueAnimator) {
+        valueAnimator.duration = multiSearchConfiguration.searchAnimationDuration.toLong()
+        valueAnimator.interpolator = LinearOutSlowInInterpolator()
     }
 }
