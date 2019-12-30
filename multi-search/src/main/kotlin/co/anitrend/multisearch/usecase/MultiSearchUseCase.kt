@@ -246,9 +246,4 @@ internal class MultiSearchUseCase(
         selectedSearchItemTab = parent
         selectedSearchItemTab?.let { selectTab(it) }
     }
-
-    companion object {
-
-        private const val DEFAULT_ANIM_DURATION = 250L
-    }
 }
