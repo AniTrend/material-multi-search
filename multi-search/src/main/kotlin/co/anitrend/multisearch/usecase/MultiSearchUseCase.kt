@@ -182,7 +182,7 @@ internal class MultiSearchUseCase(
     private fun onTabRemoving(newSelectedTabView: View, selectedIndex: Int) {
         multiSearchChangeListener?.onItemSelected(
             selectedIndex,
-            newSelectedTabView.searchTermEditText.toString()
+            newSelectedTabView.searchTermEditText.text.toString()
         )
         changeSelectedTab(newSelectedTabView)
         selectedSearchItemTab = newSelectedTabView
