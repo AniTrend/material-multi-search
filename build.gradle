@@ -14,7 +14,7 @@ buildscript {
         coreKtx = '1.2.0'
         appcompat = '1.1.0'
 
-        junit = '4.12'
+        junit = '4.13'
         junitExt = '1.1.1'
         espressoCore = '3.2.0'
     }
