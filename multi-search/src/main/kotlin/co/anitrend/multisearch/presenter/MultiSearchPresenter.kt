@@ -3,6 +3,7 @@ package co.anitrend.multisearch.presenter
 import android.animation.LayoutTransition
 import android.animation.ValueAnimator
 import android.content.Context
+import android.content.res.Resources
 import android.content.res.TypedArray
 import android.view.LayoutInflater
 import android.view.View
@@ -13,21 +14,18 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import co.anitrend.multisearch.R
+import co.anitrend.multisearch.databinding.SearchItemBinding
 import co.anitrend.multisearch.extensions.setStyle
 import co.anitrend.multisearch.model.MultiSearchConfiguration
-import kotlinx.android.synthetic.main.search_item.view.*
 
-internal class MultiSearchPresenter(private val context: Context) {
+internal class MultiSearchPresenter(resources: Resources) {
 
     private lateinit var multiSearchConfiguration: MultiSearchConfiguration
 
-    internal var isInSearchMode = false
-    internal val sizeRemoveIcon = context.resources.getDimensionPixelSize(
-        R.dimen.material_padding
-    )
-    internal val defaultPadding = context.resources.getDimensionPixelSize(
-        R.dimen.material_padding
-    )
+    var isInSearchMode = false
+
+    val sizeRemoveIcon = resources.getDimensionPixelSize(R.dimen.material_padding)
+    val defaultPadding = resources.getDimensionPixelSize(R.dimen.material_padding)
 
     /**
      * Creates configuration from styles
@@ -76,7 +74,7 @@ internal class MultiSearchPresenter(private val context: Context) {
     ) {
         if (multiSearchActionIcon != null) {
             val searchIcon = ContextCompat.getDrawable(
-                context,
+                multiSearchActionIcon.context,
                 multiSearchConfiguration.searchIcon
             )
 
@@ -92,10 +90,9 @@ internal class MultiSearchPresenter(private val context: Context) {
     fun configureSelectionIndicator(viewIndicator: View?) {
         if (viewIndicator != null) {
             val indicatorDrawable = ContextCompat.getDrawable(
-                context,
+                viewIndicator.context,
                 multiSearchConfiguration.searchSelectionIndicator
             )
-
             viewIndicator.background = indicatorDrawable
         }
     }
@@ -108,7 +105,7 @@ internal class MultiSearchPresenter(private val context: Context) {
     private fun configureSearchItemAction(searchItemAction: AppCompatImageView?) {
         if (searchItemAction != null) {
             val actionDrawable = ContextCompat.getDrawable(
-                context,
+                searchItemAction.context,
                 multiSearchConfiguration.searchRemoveIcon
             )
 
@@ -129,19 +126,21 @@ internal class MultiSearchPresenter(private val context: Context) {
     /**
      * Inflates search item view
      */
-    fun createNewSearchItem(viewGroup: ViewGroup, searchItemWidth: Float): View {
-        val searchItem = LayoutInflater.from(context).inflate(
-            R.layout.search_item,
+    fun createNewSearchItem(viewGroup: ViewGroup, searchItemWidth: Float): SearchItemBinding {
+        val context = viewGroup.context
+        val searchItem = SearchItemBinding.inflate(
+            LayoutInflater.from(context),
             viewGroup,
             false
         )
 
-        with (searchItem) {
-            configureSearchItemAction(searchItem.searchTermRemoveIcon)
-            val editText = searchItem.searchTermEditText
-            editText.setStyle(context, multiSearchConfiguration.searchTextAppearance)
-            layoutParams = LinearLayout.LayoutParams(searchItemWidth.toInt(), WRAP_CONTENT)
-        }
+        configureSearchItemAction(searchItem.searchTermRemoveIcon)
+        val editText = searchItem.searchTermEditText
+        editText.setStyle(context, multiSearchConfiguration.searchTextAppearance)
+        searchItem.root.layoutParams = LinearLayout.LayoutParams(
+            searchItemWidth.toInt(),
+            WRAP_CONTENT
+        )
 
         return searchItem
     }

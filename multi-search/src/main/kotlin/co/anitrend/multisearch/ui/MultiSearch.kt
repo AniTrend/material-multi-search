@@ -5,9 +5,11 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import co.anitrend.multisearch.R
+import co.anitrend.multisearch.databinding.SearchViewBinding
 import co.anitrend.multisearch.model.MultiSearchChangeListener
+import co.anitrend.multisearch.model.Search
 import co.anitrend.multisearch.presenter.MultiSearchPresenter
-import kotlinx.android.synthetic.main.search_view.view.*
+import kotlinx.coroutines.flow.StateFlow
 
 class MultiSearch @JvmOverloads constructor(
     context: Context,
@@ -15,9 +17,19 @@ class MultiSearch @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ): FrameLayout(context, attrs, defStyleAttr) {
 
-    private val presenter by lazy {
-        MultiSearchPresenter(context)
-    }
+    private val binding
+            by lazy(LazyThreadSafetyMode.NONE) {
+                SearchViewBinding.inflate(
+                    LayoutInflater.from(context),
+                    this,
+                    true
+                )
+            }
+
+    private val presenter
+            by lazy(LazyThreadSafetyMode.NONE) {
+                MultiSearchPresenter(resources)
+            }
 
     init {
         val typedArray = context.theme.obtainStyledAttributes(
@@ -28,25 +40,41 @@ class MultiSearch @JvmOverloads constructor(
     }
 
     private fun onInitializeComponent() {
-        LayoutInflater.from(context).inflate(
-            R.layout.search_view,
-            this,
-            true
-        )
         presenter.configureSearchAction(
-            multiSearchActionIcon
+            binding.multiSearchActionIcon
         )
 
-        multiSearchContainer.presenter = presenter
-        multiSearchActionIcon.setOnClickListener {
+        binding.multiSearchContainer.presenter = presenter
+        binding.multiSearchActionIcon.setOnClickListener {
             if (!presenter.isInSearchMode)
-                multiSearchContainer.search()
+                binding.multiSearchContainer.search()
             else
-                multiSearchContainer.completeSearch()
+                binding.multiSearchContainer.completeSearch()
         }
+        binding.multiSearchContainer
     }
 
+    /**
+     * Provides access to observe changes on this widget
+     */
+    fun searchChangeFlow(): StateFlow<Search?> {
+        return binding.multiSearchContainer.mutableSearchFlow
+    }
+
+    @Deprecated(
+        "Migrate to flows for better lifecycle management",
+        ReplaceWith(
+            "searchChangeFlow().onEach<Search?> { }.collect()",
+            "kotlinx.coroutines.flow.StateFlow", "co.anitrend.multisearch.model.Search"
+        )
+    )
     fun setSearchViewListener(multiSearchChangeListener: MultiSearchChangeListener) {
-        multiSearchContainer.multiSearchChangeListener = multiSearchChangeListener
+        binding.multiSearchContainer.multiSearchChangeListener = multiSearchChangeListener
+    }
+
+    override fun onDetachedFromWindow() {
+        binding.multiSearchContainer.multiSearchChangeListener = null
+        binding.multiSearchActionIcon.setOnClickListener(null)
+        super.onDetachedFromWindow()
     }
 }

@@ -1,5 +1,6 @@
 package co.anitrend.multisearch.model
 
+@Deprecated("Switch to flow instead of callbacks, see co.anitrend.multisearch.ui.searchChangeFlow")
 interface MultiSearchChangeListener {
 
     /**
