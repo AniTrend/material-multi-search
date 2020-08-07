@@ -8,10 +8,10 @@ sealed class Search {
     /**
      * Called as the text is changing
      *
-     * @param charSequence Stream of characters with changes as they happen
+     * @param text The text of the changes as they happen
      */
     class TextChanged(
-        val charSequence: CharSequence
+        val text: CharSequence
     ) : Search()
 
     /**

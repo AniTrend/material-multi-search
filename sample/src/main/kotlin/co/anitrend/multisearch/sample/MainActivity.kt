@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
     private fun onSearchStateChanged(search: Search) {
         when (search) {
             is Search.TextChanged ->
-                Timber.tag(TAG).i("changed: ${search.charSequence}")
+                Timber.tag(TAG).i("changed: ${search.text}")
             is Search.Removed ->
                 Timber.tag(TAG).i("removed: ${search.index}")
             is Search.Selected ->
