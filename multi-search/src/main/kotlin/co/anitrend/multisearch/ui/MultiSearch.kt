@@ -64,8 +64,12 @@ class MultiSearch @JvmOverloads constructor(
     @Deprecated(
         "Migrate to flows for better lifecycle management",
         ReplaceWith(
-            "searchChangeFlow().onEach<Search?> { }.collect()",
-            "kotlinx.coroutines.flow.StateFlow", "co.anitrend.multisearch.model.Search"
+            "searchChangeFlow().filterNotNull().onEach { }.collect()",
+            "kotlinx.coroutines.flow.StateFlow",
+            "kotlinx.coroutines.flow.collect",
+            "kotlinx.coroutines.flow.onEach",
+            "kotlinx.coroutines.flow.filterNotNull",
+            "co.anitrend.multisearch.model.Search"
         )
     )
     fun setSearchViewListener(multiSearchChangeListener: MultiSearchChangeListener) {
