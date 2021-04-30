@@ -3,18 +3,20 @@ package co.anitrend.multisearch.ui
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
-import co.anitrend.multisearch.R
+import androidx.core.widget.doOnTextChanged
 import co.anitrend.multisearch.contract.SimpleTextWatcher
+import co.anitrend.multisearch.databinding.SearchItemBinding
+import co.anitrend.multisearch.databinding.SearchViewContainerBinding
 import co.anitrend.multisearch.extensions.onSearchAction
 import co.anitrend.multisearch.model.MultiSearchChangeListener
+import co.anitrend.multisearch.model.Search
 import co.anitrend.multisearch.presenter.MultiSearchPresenter
 import co.anitrend.multisearch.usecase.MultiSearchUseCase
 import co.anitrend.multisearch.util.KeyboardUtility.hideKeyboard
-import kotlinx.android.synthetic.main.search_item.view.*
-import kotlinx.android.synthetic.main.search_view_container.view.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class MultiSearchContainer @JvmOverloads constructor(
     context: Context,
@@ -25,31 +27,37 @@ class MultiSearchContainer @JvmOverloads constructor(
     private var searchViewWidth: Float = 0f
     private var viewWidth: Float = 0f
 
-    private val multiSearchUseCase by lazy {
-        MultiSearchUseCase(
-            presenter,
-            multiSearchChangeListener,
-            this@MultiSearchContainer
-        )
-    }
-
-    init {
-        LayoutInflater.from(context).inflate(
-            R.layout.search_view_container,
-            this,
-            true
-        )
-    }
-
     internal lateinit var presenter: MultiSearchPresenter
 
-    var multiSearchChangeListener: MultiSearchChangeListener? = null
-        internal set
+    @Deprecated("Use mutableSearchFlow instead")
+    internal var multiSearchChangeListener: MultiSearchChangeListener? = null
+
+    internal val mutableSearchFlow =
+        MutableStateFlow<Search?>(null)
+
+    private val searchContainer
+            by lazy(LazyThreadSafetyMode.NONE) {
+                SearchViewContainerBinding.inflate(
+                    LayoutInflater.from(context),
+                    this,
+                    true
+                )
+            }
+
+    private val multiSearchUseCase
+            by lazy(LazyThreadSafetyMode.NONE) {
+                MultiSearchUseCase(
+                    presenter,
+                    multiSearchChangeListener,
+                    mutableSearchFlow,
+                    searchContainer
+                )
+            }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        layoutItemContainer.layoutTransition = presenter.getContainerTransition()
-        presenter.configureSelectionIndicator(viewIndicator)
+        searchContainer.layoutItemContainer.layoutTransition = presenter.getContainerTransition()
+        presenter.configureSelectionIndicator(searchContainer.viewIndicator)
     }
 
     /**
@@ -92,8 +100,9 @@ class MultiSearchContainer @JvmOverloads constructor(
         multiSearchUseCase.onSearchCompleted()
     }
 
-    private fun createNewSearchItem(): View {
-        val searchItem = presenter.createNewSearchItem(this, searchViewWidth)
+    private fun createNewSearchItem(): SearchItemBinding {
+        val searchItem =
+            presenter.createNewSearchItem(this, searchViewWidth)
 
         searchItem.searchTermEditText.setOnClickListener {
             if (!presenter.isInSearchMode) {
@@ -102,19 +111,14 @@ class MultiSearchContainer @JvmOverloads constructor(
             }
         }
 
-        searchItem.searchTermEditText.addTextChangedListener(
-            object : SimpleTextWatcher() {
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    super.onTextChanged(s, start, before, count)
-                    s?.let {
-                        multiSearchChangeListener?.onTextChanged(
-                            layoutItemContainer.childCount - 1,
-                            it
-                        )
-                    }
-                }
-            }
-        )
+        searchItem.searchTermEditText.doOnTextChanged { text, _, _, count ->
+            val changedText = text?.toString().orEmpty()
+            multiSearchChangeListener?.onTextChanged(
+                searchContainer.layoutItemContainer.childCount - 1,
+                changedText
+            )
+            mutableSearchFlow.value = Search.TextChanged(changedText)
+        }
 
         searchItem.searchTermRemoveIcon.setOnClickListener {
             if (it.isVisible)
@@ -132,5 +136,10 @@ class MultiSearchContainer @JvmOverloads constructor(
 
     companion object {
         private const val WIDTH_RATIO = 0.85f
+
+        private const val BUNDLE_KEY_SELECTED_INDEX = "_BUNDLE_KEY_SELECTED_INDEX"
+        private const val BUNDLE_KEY_SEARCH_ITEMS = "_BUNDLE_KEY_SEARCH_ITEMS"
+        private const val BUNDLE_SPARSE_STATE_KEY = "_BUNDLE_SPARSE_STATE_KEY"
+        private const val BUNDLE_SUPER_STATE_KEY = "_BUNDLE_SUPER_STATE_KEY"
     }
 }

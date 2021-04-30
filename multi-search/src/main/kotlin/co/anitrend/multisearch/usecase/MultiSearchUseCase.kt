@@ -3,41 +3,42 @@ package co.anitrend.multisearch.usecase
 import android.animation.ValueAnimator
 import android.view.View
 import androidx.core.animation.doOnEnd
-import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
+import co.anitrend.multisearch.databinding.SearchItemBinding
+import co.anitrend.multisearch.databinding.SearchViewContainerBinding
 import co.anitrend.multisearch.extensions.afterMeasured
 import co.anitrend.multisearch.model.MultiSearchChangeListener
+import co.anitrend.multisearch.model.Search
 import co.anitrend.multisearch.presenter.MultiSearchPresenter
 import co.anitrend.multisearch.usecase.contract.SearchUseCase
 import co.anitrend.multisearch.util.KeyboardUtility
-import kotlinx.android.synthetic.main.search_item.view.*
-import kotlinx.android.synthetic.main.search_view_container.view.*
+import kotlinx.coroutines.flow.MutableStateFlow
 
 internal class MultiSearchUseCase(
     private val presenter: MultiSearchPresenter,
     private val multiSearchChangeListener: MultiSearchChangeListener?,
-    private val multiSearchContainer: View
+    private val mutableSearchFlow: MutableStateFlow<Search?>,
+    private val multiSearchContainer: SearchViewContainerBinding
 ) : SearchUseCase {
 
-    internal var selectedSearchItemTab: View? = null
+    internal var selectedSearchItemTab: SearchItemBinding? = null
 
     private val searchEnterScrollAnimation by lazy(LazyThreadSafetyMode.NONE) {
-        ValueAnimator.ofInt()
-            .apply {
-                presenter.configureValueAnimator(
-                    this
-                )
-                addUpdateListener {
-                    multiSearchContainer.horizontalScrollView
-                        .smoothScrollTo(it.animatedValue as Int, 0)
-                }
+        ValueAnimator.ofInt().apply {
+            presenter.configureValueAnimator(
+                this
+            )
+            addUpdateListener {
+                multiSearchContainer.horizontalScrollView
+                    .smoothScrollTo(it.animatedValue as Int, 0)
+            }
 
-                doOnEnd { _ ->
-                    selectedSearchItemTab?.let {
-                        it.searchTermEditText.requestFocus()
-                        KeyboardUtility.showKeyboard(it.context)
-                    }
+            doOnEnd { _ ->
+                selectedSearchItemTab?.let {
+                    it.searchTermEditText.requestFocus()
+                    KeyboardUtility.showKeyboard(it.root.context)
                 }
             }
+        }
     }
 
     private val searchCompleteCollapseAnimator by lazy(LazyThreadSafetyMode.NONE) {
@@ -47,9 +48,9 @@ internal class MultiSearchUseCase(
             )
             addUpdateListener { valueAnimator ->
                 selectedSearchItemTab?.let {
-                    val newViewLayoutParams = it.layoutParams
+                    val newViewLayoutParams = it.root.layoutParams
                     newViewLayoutParams.width = valueAnimator.animatedValue as Int
-                    it.layoutParams = newViewLayoutParams
+                    it.root.layoutParams = newViewLayoutParams
                 }
             }
         }
@@ -67,7 +68,7 @@ internal class MultiSearchUseCase(
             doOnEnd { _ ->
                 selectedSearchItemTab?.let {
                     it.searchTermEditText.requestFocus()
-                    KeyboardUtility.showKeyboard(it.context)
+                    KeyboardUtility.showKeyboard(it.root.context)
                 }
             }
         }
@@ -75,9 +76,7 @@ internal class MultiSearchUseCase(
 
     private val indicatorAnimator by lazy(LazyThreadSafetyMode.NONE) {
         ValueAnimator.ofFloat().apply {
-            presenter.configureValueAnimator(
-                this
-            )
+            presenter.configureValueAnimator(this)
             addUpdateListener { valueAnimator ->
                 multiSearchContainer.viewIndicator.x =
                     valueAnimator.animatedValue as Float
@@ -86,7 +85,7 @@ internal class MultiSearchUseCase(
     }
 
     private fun onSearch(viewWidth: Float, searchViewWidth: Float) {
-        selectedSearchItemTab?.afterMeasured {
+        selectedSearchItemTab?.root?.afterMeasured {
             val widthWithoutCurrentSearch = widthWithoutCurrentSearch()
 
             when {
@@ -135,7 +134,7 @@ internal class MultiSearchUseCase(
         }
 
         selectedSearchItemTab?.let {
-            val startWidthValue = it.measuredWidth
+            val startWidthValue = it.root.measuredWidth
             val endWidthValue = it.searchTermEditText.measuredWidth +
                     presenter.sizeRemoveIcon +
                     presenter.defaultPadding
@@ -145,10 +144,10 @@ internal class MultiSearchUseCase(
                 endWidthValue
             )
             searchCompleteCollapseAnimator.start()
-            multiSearchChangeListener?.onSearchComplete(
-                multiSearchContainer.layoutItemContainer.childCount - 1,
-                it.searchTermEditText.text.toString()
-            )
+            val index = multiSearchContainer.layoutItemContainer.childCount - 1
+            val text = it.searchTermEditText.text.toString()
+            multiSearchChangeListener?.onSearchComplete(index, text)
+            mutableSearchFlow.value = Search.Selected(text, index)
         }
 
         selectedSearchItemTab?.let {
@@ -156,12 +155,17 @@ internal class MultiSearchUseCase(
         }
     }
 
-    internal fun onItemClicked(searchItem: View) {
+    internal fun onItemClicked(searchItem: SearchItemBinding) {
         if (searchItem != selectedSearchItemTab) {
-            multiSearchChangeListener?.onItemSelected(
-                multiSearchContainer.layoutItemContainer.indexOfChild(searchItem),
-                searchItem.searchTermEditText.text.toString()
+            val item = Search.Selected(
+                index = multiSearchContainer.layoutItemContainer.indexOfChild(searchItem.root),
+                text = searchItem.searchTermEditText.text.toString()
             )
+
+            val index = multiSearchContainer.layoutItemContainer.indexOfChild(searchItem.root)
+            val text = searchItem.searchTermEditText.text.toString()
+            multiSearchChangeListener?.onItemSelected(index,text)
+            mutableSearchFlow.value = Search.Selected(text, index)
         }
     }
 
@@ -179,30 +183,29 @@ internal class MultiSearchUseCase(
         }
     }
 
-    private fun onTabRemoving(newSelectedTabView: View, selectedIndex: Int) {
-        multiSearchChangeListener?.onItemSelected(
-            selectedIndex,
-            newSelectedTabView.searchTermEditText.text.toString()
-        )
+    private fun onTabRemoving(newSelectedTabView: SearchItemBinding, selectedIndex: Int) {
+        val text = newSelectedTabView.searchTermEditText.text.toString()
+        multiSearchChangeListener?.onItemSelected(selectedIndex, text)
+        mutableSearchFlow.value = Search.Selected(text, selectedIndex)
         changeSelectedTab(newSelectedTabView)
         selectedSearchItemTab = newSelectedTabView
     }
 
     override fun addTab(viewWidth: Float, searchViewWidth: Float) {
         multiSearchContainer.layoutItemContainer.addView(
-            selectedSearchItemTab
+            selectedSearchItemTab?.root
         )
         onSearch(viewWidth, searchViewWidth)
     }
 
-    override fun removeTab(parent: View) {
-        val removeIndex = multiSearchContainer.layoutItemContainer.indexOfChild(parent)
+    override fun removeTab(item: SearchItemBinding) {
+        val removeIndex = multiSearchContainer.layoutItemContainer.indexOfChild(item.root)
         val currentChildCount = multiSearchContainer.layoutItemContainer.childCount
 
         when {
             currentChildCount == 1 -> {
                 multiSearchContainer.viewIndicator.visibility = View.INVISIBLE
-                multiSearchContainer.layoutItemContainer.removeView(parent)
+                multiSearchContainer.layoutItemContainer.removeView(item.root)
                 presenter.isInSearchMode = false
                 selectedSearchItemTab = null
             }
@@ -210,24 +213,25 @@ internal class MultiSearchUseCase(
                 val index = removeIndex - 1
                 val newSelectedTabView = multiSearchContainer
                     .layoutItemContainer.getChildAt(index)
-                multiSearchContainer.layoutItemContainer.removeView(parent)
-                onTabRemoving(newSelectedTabView, index)
+                multiSearchContainer.layoutItemContainer.removeView(item.root)
+                onTabRemoving(SearchItemBinding.bind(newSelectedTabView), index)
             }
             else -> {
                 val index = removeIndex + 1
                 val newSelectedTabView = multiSearchContainer
                     .layoutItemContainer.getChildAt(index)
-                multiSearchContainer.layoutItemContainer.removeView(parent)
-                onTabRemoving(newSelectedTabView, index)
+                multiSearchContainer.layoutItemContainer.removeView(item.root)
+                onTabRemoving(SearchItemBinding.bind(newSelectedTabView), index)
             }
         }
 
         multiSearchChangeListener?.onSearchItemRemoved(removeIndex)
+        mutableSearchFlow.value = Search.Removed(removeIndex)
     }
 
-    override fun selectTab(parent: View) {
+    override fun selectTab(item: SearchItemBinding) {
         val indicatorCurrentXPosition = multiSearchContainer.viewIndicator.x
-        val indicatorTargetXPosition = parent.x
+        val indicatorTargetXPosition = item.root.x
         indicatorAnimator.setFloatValues(
             indicatorCurrentXPosition,
             indicatorTargetXPosition
@@ -235,19 +239,19 @@ internal class MultiSearchUseCase(
         indicatorAnimator.start()
 
         multiSearchContainer.viewIndicator.visibility = View.VISIBLE
-        parent.searchTermRemoveIcon.visibility = View.VISIBLE
-        parent.searchTermEditText.alpha = 1f
+        item.searchTermRemoveIcon.visibility = View.VISIBLE
+        item.searchTermEditText.alpha = 1f
     }
 
-    override fun deselectTab(parent: View) {
+    override fun deselectTab(item: SearchItemBinding) {
         multiSearchContainer.viewIndicator.visibility = View.INVISIBLE
-        parent.searchTermRemoveIcon.visibility = View.GONE
-        parent.searchTermEditText.alpha = 0.5f
+        item.searchTermRemoveIcon.visibility = View.GONE
+        item.searchTermEditText.alpha = 0.5f
     }
 
-    override fun changeSelectedTab(parent: View) {
+    override fun changeSelectedTab(item: SearchItemBinding) {
         selectedSearchItemTab?.let { deselectTab(it) }
-        selectedSearchItemTab = parent
+        selectedSearchItemTab = item
         selectedSearchItemTab?.let { selectTab(it) }
     }
 }
