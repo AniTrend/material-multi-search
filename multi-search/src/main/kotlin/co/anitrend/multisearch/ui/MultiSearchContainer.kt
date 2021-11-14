@@ -1,3 +1,19 @@
+/**
+ * Copyright 2021 AniTrend
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package co.anitrend.multisearch.ui
 
 import android.content.Context
@@ -6,17 +22,14 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
-import co.anitrend.multisearch.contract.SimpleTextWatcher
+import co.anitrend.arch.extension.ext.toggleIme
 import co.anitrend.multisearch.databinding.SearchItemBinding
 import co.anitrend.multisearch.databinding.SearchViewContainerBinding
 import co.anitrend.multisearch.extensions.onSearchAction
-import co.anitrend.multisearch.model.MultiSearchChangeListener
 import co.anitrend.multisearch.model.Search
 import co.anitrend.multisearch.presenter.MultiSearchPresenter
 import co.anitrend.multisearch.usecase.MultiSearchUseCase
-import co.anitrend.multisearch.util.KeyboardUtility.hideKeyboard
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 class MultiSearchContainer @JvmOverloads constructor(
     context: Context,
@@ -29,30 +42,26 @@ class MultiSearchContainer @JvmOverloads constructor(
 
     internal lateinit var presenter: MultiSearchPresenter
 
-    @Deprecated("Use mutableSearchFlow instead")
-    internal var multiSearchChangeListener: MultiSearchChangeListener? = null
-
     internal val mutableSearchFlow =
         MutableStateFlow<Search?>(null)
 
     private val searchContainer
-            by lazy(LazyThreadSafetyMode.NONE) {
-                SearchViewContainerBinding.inflate(
-                    LayoutInflater.from(context),
-                    this,
-                    true
-                )
-            }
+        by lazy(LazyThreadSafetyMode.NONE) {
+        SearchViewContainerBinding.inflate(
+            LayoutInflater.from(context),
+            this,
+            true
+        )
+    }
 
     private val multiSearchUseCase
-            by lazy(LazyThreadSafetyMode.NONE) {
-                MultiSearchUseCase(
-                    presenter,
-                    multiSearchChangeListener,
-                    mutableSearchFlow,
-                    searchContainer
-                )
-            }
+        by lazy(LazyThreadSafetyMode.NONE) {
+        MultiSearchUseCase(
+            presenter,
+            mutableSearchFlow,
+            searchContainer
+        )
+    }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -95,7 +104,7 @@ class MultiSearchContainer @JvmOverloads constructor(
             return
 
         presenter.isInSearchMode = false
-        hideKeyboard(context)
+        toggleIme(false)
 
         multiSearchUseCase.onSearchCompleted()
     }
@@ -111,12 +120,8 @@ class MultiSearchContainer @JvmOverloads constructor(
             }
         }
 
-        searchItem.searchTermEditText.doOnTextChanged { text, _, _, count ->
+        searchItem.searchTermEditText.doOnTextChanged { text, _, _, _ ->
             val changedText = text?.toString().orEmpty()
-            multiSearchChangeListener?.onTextChanged(
-                searchContainer.layoutItemContainer.childCount - 1,
-                changedText
-            )
             mutableSearchFlow.value = Search.TextChanged(changedText)
         }
 

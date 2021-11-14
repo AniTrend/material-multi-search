@@ -3,7 +3,6 @@ package co.anitrend.multisearch.buildSrc.plugin.extensions
 import co.anitrend.multisearch.buildSrc.module.Modules
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
-import com.android.build.gradle.api.BaseVariantOutput
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import com.diffplug.gradle.spotless.SpotlessExtension
 import org.gradle.api.Project
@@ -45,9 +44,6 @@ internal fun Project.sourceSetContainer() =
 
 internal fun Project.javaPluginExtension() =
     extensions.getByType<JavaPluginExtension>()
-
-internal fun Project.variantOutput() =
-    extensions.getByType<BaseVariantOutput>()
 
 internal fun Project.libraryExtension() =
     extensions.getByType<LibraryExtension>()

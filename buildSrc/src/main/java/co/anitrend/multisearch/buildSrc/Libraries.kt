@@ -53,6 +53,14 @@ object Libraries {
         }
     }
 
+    object AniTrend {
+
+        object Arch {
+            private const val version = "1.3.0-rc07"
+            const val ext = "com.github.anitrend.support-arch:extension:${version}"
+        }
+    }
+
     object JetBrains {
         object Coroutines {
             private const val version = "1.4.2"

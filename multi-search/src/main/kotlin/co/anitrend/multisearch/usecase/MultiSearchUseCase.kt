@@ -1,21 +1,35 @@
+/**
+ * Copyright 2021 AniTrend
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package co.anitrend.multisearch.usecase
 
 import android.animation.ValueAnimator
 import android.view.View
 import androidx.core.animation.doOnEnd
+import co.anitrend.arch.extension.ext.toggleIme
 import co.anitrend.multisearch.databinding.SearchItemBinding
 import co.anitrend.multisearch.databinding.SearchViewContainerBinding
 import co.anitrend.multisearch.extensions.afterMeasured
-import co.anitrend.multisearch.model.MultiSearchChangeListener
 import co.anitrend.multisearch.model.Search
 import co.anitrend.multisearch.presenter.MultiSearchPresenter
 import co.anitrend.multisearch.usecase.contract.SearchUseCase
-import co.anitrend.multisearch.util.KeyboardUtility
 import kotlinx.coroutines.flow.MutableStateFlow
 
 internal class MultiSearchUseCase(
     private val presenter: MultiSearchPresenter,
-    private val multiSearchChangeListener: MultiSearchChangeListener?,
     private val mutableSearchFlow: MutableStateFlow<Search?>,
     private val multiSearchContainer: SearchViewContainerBinding
 ) : SearchUseCase {
@@ -35,7 +49,7 @@ internal class MultiSearchUseCase(
             doOnEnd { _ ->
                 selectedSearchItemTab?.let {
                     it.searchTermEditText.requestFocus()
-                    KeyboardUtility.showKeyboard(it.root.context)
+                    it.root.toggleIme(true)
                 }
             }
         }
@@ -68,7 +82,7 @@ internal class MultiSearchUseCase(
             doOnEnd { _ ->
                 selectedSearchItemTab?.let {
                     it.searchTermEditText.requestFocus()
-                    KeyboardUtility.showKeyboard(it.root.context)
+                    it.root.toggleIme(true)
                 }
             }
         }
@@ -96,8 +110,8 @@ internal class MultiSearchUseCase(
                 widthWithoutCurrentSearch < viewWidth -> {
                     val scrollEnterStartValue = 0
                     val scrollEnterEndValue = (
-                            multiSearchContainer.layoutItemContainer.measuredWidth - viewWidth
-                            ).toInt()
+                        multiSearchContainer.layoutItemContainer.measuredWidth - viewWidth
+                        ).toInt()
                     searchEnterScrollAnimation.setIntValues(
                         scrollEnterStartValue,
                         scrollEnterEndValue
@@ -107,8 +121,8 @@ internal class MultiSearchUseCase(
                 else -> {
                     val scrollEnterStartValue = (widthWithoutCurrentSearch - viewWidth).toInt()
                     val scrollEnterEndValue = (
-                            widthWithoutCurrentSearch - viewWidth + searchViewWidth.toInt()
-                            ).toInt()
+                        widthWithoutCurrentSearch - viewWidth + searchViewWidth.toInt()
+                        ).toInt()
                     searchEnterScrollAnimation.setIntValues(
                         scrollEnterStartValue,
                         scrollEnterEndValue
@@ -136,8 +150,8 @@ internal class MultiSearchUseCase(
         selectedSearchItemTab?.let {
             val startWidthValue = it.root.measuredWidth
             val endWidthValue = it.searchTermEditText.measuredWidth +
-                    presenter.sizeRemoveIcon +
-                    presenter.defaultPadding
+                presenter.sizeRemoveIcon +
+                presenter.defaultPadding
 
             searchCompleteCollapseAnimator.setIntValues(
                 startWidthValue,
@@ -146,7 +160,6 @@ internal class MultiSearchUseCase(
             searchCompleteCollapseAnimator.start()
             val index = multiSearchContainer.layoutItemContainer.childCount - 1
             val text = it.searchTermEditText.text.toString()
-            multiSearchChangeListener?.onSearchComplete(index, text)
             mutableSearchFlow.value = Search.Selected(text, index)
         }
 
@@ -157,14 +170,8 @@ internal class MultiSearchUseCase(
 
     internal fun onItemClicked(searchItem: SearchItemBinding) {
         if (searchItem != selectedSearchItemTab) {
-            val item = Search.Selected(
-                index = multiSearchContainer.layoutItemContainer.indexOfChild(searchItem.root),
-                text = searchItem.searchTermEditText.text.toString()
-            )
-
             val index = multiSearchContainer.layoutItemContainer.indexOfChild(searchItem.root)
             val text = searchItem.searchTermEditText.text.toString()
-            multiSearchChangeListener?.onItemSelected(index,text)
             mutableSearchFlow.value = Search.Selected(text, index)
         }
     }
@@ -185,7 +192,6 @@ internal class MultiSearchUseCase(
 
     private fun onTabRemoving(newSelectedTabView: SearchItemBinding, selectedIndex: Int) {
         val text = newSelectedTabView.searchTermEditText.text.toString()
-        multiSearchChangeListener?.onItemSelected(selectedIndex, text)
         mutableSearchFlow.value = Search.Selected(text, selectedIndex)
         changeSelectedTab(newSelectedTabView)
         selectedSearchItemTab = newSelectedTabView
@@ -225,7 +231,6 @@ internal class MultiSearchUseCase(
             }
         }
 
-        multiSearchChangeListener?.onSearchItemRemoved(removeIndex)
         mutableSearchFlow.value = Search.Removed(removeIndex)
     }
 

@@ -1,3 +1,19 @@
+/**
+ * Copyright 2021 AniTrend
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package co.anitrend.multisearch.ui
 
 import android.content.Context
@@ -6,7 +22,6 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import co.anitrend.multisearch.R
 import co.anitrend.multisearch.databinding.SearchViewBinding
-import co.anitrend.multisearch.model.MultiSearchChangeListener
 import co.anitrend.multisearch.model.Search
 import co.anitrend.multisearch.presenter.MultiSearchPresenter
 import kotlinx.coroutines.flow.StateFlow
@@ -15,21 +30,21 @@ class MultiSearch @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-): FrameLayout(context, attrs, defStyleAttr) {
+) : FrameLayout(context, attrs, defStyleAttr) {
 
     private val binding
-            by lazy(LazyThreadSafetyMode.NONE) {
-                SearchViewBinding.inflate(
-                    LayoutInflater.from(context),
-                    this,
-                    true
-                )
-            }
+        by lazy(LazyThreadSafetyMode.NONE) {
+        SearchViewBinding.inflate(
+            LayoutInflater.from(context),
+            this,
+            true
+        )
+    }
 
     private val presenter
-            by lazy(LazyThreadSafetyMode.NONE) {
-                MultiSearchPresenter(resources)
-            }
+        by lazy(LazyThreadSafetyMode.NONE) {
+        MultiSearchPresenter(resources)
+    }
 
     init {
         val typedArray = context.theme.obtainStyledAttributes(
@@ -61,23 +76,7 @@ class MultiSearch @JvmOverloads constructor(
         return binding.multiSearchContainer.mutableSearchFlow
     }
 
-    @Deprecated(
-        "Migrate to flows for better lifecycle management",
-        ReplaceWith(
-            "searchChangeFlow().filterNotNull().onEach { }.collect()",
-            "kotlinx.coroutines.flow.StateFlow",
-            "kotlinx.coroutines.flow.collect",
-            "kotlinx.coroutines.flow.onEach",
-            "kotlinx.coroutines.flow.filterNotNull",
-            "co.anitrend.multisearch.model.Search"
-        )
-    )
-    fun setSearchViewListener(multiSearchChangeListener: MultiSearchChangeListener) {
-        binding.multiSearchContainer.multiSearchChangeListener = multiSearchChangeListener
-    }
-
     override fun onDetachedFromWindow() {
-        binding.multiSearchContainer.multiSearchChangeListener = null
         binding.multiSearchActionIcon.setOnClickListener(null)
         super.onDetachedFromWindow()
     }

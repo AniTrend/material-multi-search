@@ -42,35 +42,44 @@ How to set up the library in your project [setup guide here](https://jitpack.io/
 
 ### 2. Setup callbacks for multi-search events
 ```kotlin
-    private val searchChangeListener =
-        object : MultiSearchChangeListener {
-            override fun onTextChanged(index: Int, charSequence: CharSequence) {
-                Timber.tag(TAG).i("onTextChanged(index: $index, charSequence: $charSequence)")
-            }
+class MainActivity : AppCompatActivity() {
 
-            override fun onSearchComplete(index: Int, charSequence: CharSequence) {
-                Timber.tag(TAG).i("onSearchComplete(index: $index, charSequence: $charSequence)")
-            }
+    private val binding by lazy(LazyThreadSafetyMode.NONE) {
+        ActivityMainBinding.inflate(layoutInflater)
+    }
 
-            override fun onSearchItemRemoved(index: Int) {
-                Timber.tag(TAG).i("onSearchItemRemoved(index: $index)")
-            }
-
-            override fun onItemSelected(index: Int, charSequence: CharSequence) {
-                Timber.tag(TAG).i("onItemSelected(index: $index, charSequence: $charSequence)")
-            }
+    private fun onSearchStateChanged(search: Search) {
+        when (search) {
+            is Search.TextChanged ->
+                Timber.i("changed: ${search.text}")
+            is Search.Removed ->
+                Timber.i("removed: ${search.index}")
+            is Search.Selected ->
+                Timber.i("selected: ${search.index} -> ${search.text}")
         }
+    }
 
-    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
-        multiSearch.setSearchViewListener(searchChangeListener)
+        lifecycleScope.launchWhenResumed {
+            binding.multiSearch.searchChangeFlow()
+                .filterNotNull()
+                .onEach {
+                    onSearchStateChanged(it)
+                }
+                .catch { e ->
+                    // for any uncaught exceptions
+                    Timber.w(e)
+                }
+                .collect()
+        }
     }
+}
 ```
 
 Should result in something similar to this:
