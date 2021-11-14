@@ -1,0 +1,35 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:co.anitrend.multisearch.extensions////PointingToDeclaration/multi-search/co.anitrend.multisearch.extensions/index.html
+$dokka.location:co.anitrend.multisearch.extensions//onSearchAction/EditText#kotlin.Boolean#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/multi-search/co.anitrend.multisearch.extensions/on-search-action.html
+$dokka.location:co.anitrend.multisearch.extensions//onSearchAction/android.widget.EditText#kotlin.Boolean#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/multi-search/co.anitrend.multisearch.extensions/[android-jvm]on-search-action.html
+$dokka.location:co.anitrend.multisearch.extensions//setStyle/EditText#Context#kotlin.Int/PointingToDeclaration/multi-search/co.anitrend.multisearch.extensions/set-style.html
+$dokka.location:co.anitrend.multisearch.extensions//setStyle/android.widget.EditText#android.content.Context#kotlin.Int/PointingToDeclaration/multi-search/co.anitrend.multisearch.extensions/[android-jvm]set-style.html
+$dokka.location:co.anitrend.multisearch.model////PointingToDeclaration/multi-search/co.anitrend.multisearch.model/index.html
+$dokka.location:co.anitrend.multisearch.model/Search.Removed///PointingToDeclaration/multi-search/co.anitrend.multisearch.model/[common]-search/-removed/index.html
+$dokka.location:co.anitrend.multisearch.model/Search.Removed/Removed/#kotlin.Int/PointingToDeclaration/multi-search/co.anitrend.multisearch.model/[common]-search/-removed/-removed.html
+$dokka.location:co.anitrend.multisearch.model/Search.Removed/index/#/PointingToDeclaration/multi-search/co.anitrend.multisearch.model/[common]-search/-removed/--index--.html
+$dokka.location:co.anitrend.multisearch.model/Search.Selected///PointingToDeclaration/multi-search/co.anitrend.multisearch.model/[common]-search/-selected/index.html
+$dokka.location:co.anitrend.multisearch.model/Search.Selected/Selected/#kotlin.CharSequence#kotlin.Int/PointingToDeclaration/multi-search/co.anitrend.multisearch.model/[common]-search/-selected/-selected.html
+$dokka.location:co.anitrend.multisearch.model/Search.Selected/index/#/PointingToDeclaration/multi-search/co.anitrend.multisearch.model/[common]-search/-selected/--index--.html
+$dokka.location:co.anitrend.multisearch.model/Search.Selected/text/#/PointingToDeclaration/multi-search/co.anitrend.multisearch.model/[common]-search/-selected/text.html
+$dokka.location:co.anitrend.multisearch.model/Search.TextChanged///PointingToDeclaration/multi-search/co.anitrend.multisearch.model/[common]-search/-text-changed/index.html
+$dokka.location:co.anitrend.multisearch.model/Search.TextChanged/TextChanged/#kotlin.CharSequence/PointingToDeclaration/multi-search/co.anitrend.multisearch.model/[common]-search/-text-changed/-text-changed.html
+$dokka.location:co.anitrend.multisearch.model/Search.TextChanged/text/#/PointingToDeclaration/multi-search/co.anitrend.multisearch.model/[common]-search/-text-changed/text.html
+$dokka.location:co.anitrend.multisearch.model/Search///PointingToDeclaration/multi-search/co.anitrend.multisearch.model/[common]-search/index.html
+$dokka.location:co.anitrend.multisearch.ui////PointingToDeclaration/multi-search/co.anitrend.multisearch.ui/index.html
+$dokka.location:co.anitrend.multisearch.ui/MultiSearch///PointingToDeclaration/multi-search/co.anitrend.multisearch.ui/[common]-multi-search/index.html
+$dokka.location:co.anitrend.multisearch.ui/MultiSearch/MultiSearch/#Context#AttributeSet?#kotlin.Int/PointingToDeclaration/multi-search/co.anitrend.multisearch.ui/[common]-multi-search/-multi-search.html
+$dokka.location:co.anitrend.multisearch.ui/MultiSearch/MultiSearch/#android.content.Context#android.util.AttributeSet?#kotlin.Int/PointingToDeclaration/multi-search/co.anitrend.multisearch.ui/[android-jvm]-multi-search/-multi-search.html
+$dokka.location:co.anitrend.multisearch.ui/MultiSearch/onDetachedFromWindow/#/PointingToDeclaration/multi-search/co.anitrend.multisearch.ui/[common]-multi-search/on-detached-from-window.html
+$dokka.location:co.anitrend.multisearch.ui/MultiSearch/searchChangeFlow/#/PointingToDeclaration/multi-search/co.anitrend.multisearch.ui/[common]-multi-search/search-change-flow.html
+$dokka.location:co.anitrend.multisearch.ui/MultiSearchContainer.Companion///PointingToDeclaration/multi-search/co.anitrend.multisearch.ui/[common]-multi-search-container/-companion/index.html
+$dokka.location:co.anitrend.multisearch.ui/MultiSearchContainer///PointingToDeclaration/multi-search/co.anitrend.multisearch.ui/[common]-multi-search-container/index.html
+$dokka.location:co.anitrend.multisearch.ui/MultiSearchContainer/MultiSearchContainer/#Context#AttributeSet?#kotlin.Int/PointingToDeclaration/multi-search/co.anitrend.multisearch.ui/[common]-multi-search-container/-multi-search-container.html
+$dokka.location:co.anitrend.multisearch.ui/MultiSearchContainer/MultiSearchContainer/#android.content.Context#android.util.AttributeSet?#kotlin.Int/PointingToDeclaration/multi-search/co.anitrend.multisearch.ui/[android-jvm]-multi-search-container/-multi-search-container.html
+$dokka.location:co.anitrend.multisearch.ui/MultiSearchContainer/onAttachedToWindow/#/PointingToDeclaration/multi-search/co.anitrend.multisearch.ui/[common]-multi-search-container/on-attached-to-window.html
+$dokka.location:co.anitrend.multisearch.ui/MultiSearchContainer/onSizeChanged/#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Int/PointingToDeclaration/multi-search/co.anitrend.multisearch.ui/[common]-multi-search-container/on-size-changed.html
+co.anitrend.multisearch.extensions
+co.anitrend.multisearch.model
+co.anitrend.multisearch.ui
+
