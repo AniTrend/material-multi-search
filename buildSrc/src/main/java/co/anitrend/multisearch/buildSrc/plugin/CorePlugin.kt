@@ -4,6 +4,7 @@ import co.anitrend.multisearch.buildSrc.plugin.components.configureAndroid
 import co.anitrend.multisearch.buildSrc.plugin.components.configureDependencies
 import co.anitrend.multisearch.buildSrc.plugin.components.configureOptions
 import co.anitrend.multisearch.buildSrc.plugin.components.configurePlugins
+import co.anitrend.multisearch.buildSrc.plugin.components.configureSpotless
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -36,8 +37,8 @@ open class CorePlugin : Plugin<Project> {
         project.configureAndroid()
         project.configureOptions()
         project.configureDependencies()
-
-        //project.availableExtensions()
-        //project.availableComponents()
+        project.configureSpotless()
+        project.availableExtensions()
+        project.availableComponents()
     }
 }

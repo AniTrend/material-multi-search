@@ -1,10 +1,11 @@
 package co.anitrend.multisearch.buildSrc.plugin.components
 
 import co.anitrend.multisearch.buildSrc.plugin.extensions.baseExtension
-import co.anitrend.multisearch.buildSrc.common.Versions
-import co.anitrend.multisearch.buildSrc.common.isLibraryModule
-import co.anitrend.multisearch.buildSrc.common.isSampleModule
 import co.anitrend.multisearch.buildSrc.plugin.extensions.baseAppExtension
+import co.anitrend.multisearch.buildSrc.plugin.extensions.spotlessExtension
+import co.anitrend.multisearch.buildSrc.common.Versions
+import co.anitrend.multisearch.buildSrc.plugin.extensions.isLibraryModule
+import co.anitrend.multisearch.buildSrc.plugin.extensions.isSampleModule
 import co.anitrend.multisearch.buildSrc.plugin.extensions.libraryExtension
 import com.android.build.gradle.internal.dsl.DefaultConfig
 import org.gradle.api.JavaVersion
@@ -12,6 +13,21 @@ import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile
 import java.io.File
+
+internal fun Project.configureSpotless(): Unit {
+    if (isLibraryModule()) {
+        spotlessExtension().run {
+            kotlin {
+                target("**/*.kt")
+                targetExclude("$buildDir/**/*.kt", "bin/**/*.kt")
+                ktlint(Versions.ktlint).userData(
+                    mapOf("android" to "true")
+                )
+                licenseHeaderFile(rootProject.file("spotless/copyright.kt"))
+            }
+        }
+    }
+}
 
 @Suppress("UnstableApiUsage")
 private fun DefaultConfig.applyAdditionalConfiguration(project: Project) {
@@ -37,11 +53,12 @@ private fun DefaultConfig.applyAdditionalConfiguration(project: Project) {
 internal fun Project.configureAndroid(): Unit = baseExtension().run {
     compileSdkVersion(Versions.compileSdk)
     defaultConfig {
-        minSdkVersion(Versions.minSdk)
-        targetSdkVersion(Versions.targetSdk)
+        minSdk = Versions.minSdk
+        targetSdk = Versions.targetSdk
         versionCode = Versions.versionCode
         versionName = Versions.versionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles.add(File("consumer-rules.pro"))
         applyAdditionalConfiguration(project)
     }
 
@@ -59,9 +76,9 @@ internal fun Project.configureAndroid(): Unit = baseExtension().run {
     }
 
     packagingOptions {
-        exclude("META-INF/NOTICE.txt")
-        exclude("META-INF/LICENSE")
-        exclude("META-INF/LICENSE.txt")
+        excludes.add("META-INF/NOTICE.txt")
+        excludes.add("META-INF/LICENSE")
+        excludes.add("META-INF/LICENSE.txt")
     }
 
     sourceSets {
@@ -93,10 +110,10 @@ internal fun Project.configureAndroid(): Unit = baseExtension().run {
             allWarningsAsErrors = false
             kotlinOptions {
                 allWarningsAsErrors = false
+
                 // Filter out modules that won't be using coroutines
                 freeCompilerArgs = listOf(
                     "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                    "-Xopt-in=kotlinx.coroutines.FlowPreview",
                     "-Xopt-in=kotlinx.coroutines.FlowPreview",
                     "-Xopt-in=kotlin.Experimental"
                 )
