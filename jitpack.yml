@@ -1,4 +1,8 @@
 jdk:
-  - openjdk8
+  - openjdk11
+install:
+   - echo "Running build commands"
+   - ./gradlew build --stacktrace
+   - ./gradlew publishMavenPublicationToMavenLocal
 env:
   CI: "true"
